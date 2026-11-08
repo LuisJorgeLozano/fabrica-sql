@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./secretos_demo.txt)",
+      "Bash(docker *)",
+      "Bash(sqlcmd *)",
+      "WebFetch",
+      "WebSearch"
+    ],
+    "allow": [
+      "Bash(.venv/bin/python -m jueces.entrada *)",
+      "Bash(.venv/bin/python -m jueces.validar *)",
+      "Bash(.venv/bin/python -m jueces.sandbox *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Glob|Grep|Write|Edit|Bash",
+        "hooks": [{"type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.venv/bin/python\" \"$CLAUDE_PROJECT_DIR/hooks/guardia.py\""}]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [{"type": "command", "timeout": 600,
+                   "command": "\"$CLAUDE_PROJECT_DIR/.venv/bin/python\" \"$CLAUDE_PROJECT_DIR/hooks/compuerta.py\""}]
+      }
+    ]
+  }
+}
