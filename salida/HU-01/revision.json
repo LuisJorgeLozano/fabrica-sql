@@ -1,0 +1,7 @@
+{"aprobado": true,
+ "hallazgos": [
+  {"severidad": "media", "archivo": "004_usp_empleado_insertar.sql", "detalle": "La comprobación de correo duplicado (50001) está fuera de la transacción. Con dos altas simultáneas del mismo correo, la segunda cae en AK_rh_Empleado_Correo y el CATCH relanza el error 2627 en lugar de 50001. Corrige el CATCH: si ERROR_NUMBER() IN (2601, 2627) y el mensaje menciona AK_rh_Empleado_Correo, haz ROLLBACK y lanza THROW 50001, N'El correo ya está registrado', 1; para los demás errores usa THROW;."},
+  {"severidad": "baja", "archivo": "003_tabla_empleado.sql", "detalle": "CK_rh_Empleado_Correo (LIKE N'%@empresa.com') acepta '@empresa.com' sin parte local. El plan no lo exige, pero conviene validar una parte local mínima, por ejemplo LEN(Correo) > 12, en la tabla y en el procedimiento."},
+  {"severidad": "baja", "archivo": "004_usp_empleado_insertar.sql", "detalle": "El SELECT de salida está dentro de la transacción. Muévelo después del COMMIT para mantener la transacción lo más corta posible."}
+ ],
+ "resumen": "Las reglas 50001, 50002, 50003, 50006 y 50007 están implementadas con su número y mensaje exactos. Los tipos, la nulabilidad, la FK con su índice, las restricciones nombradas y el TRY/CATCH con THROW; son correctos, y no hay nada fuera del plan. Solo quedan mejoras de robustez ante concurrencia y de estilo."}

@@ -1,0 +1,7 @@
+{"aprobado": true,
+ "hallazgos": [
+  {"severidad": "media", "archivo": "006_usp_empleado_consultar.sql", "detalle": "@Busqueda se declara como nvarchar(400) y el plan dice nvarchar(120). La desviación es necesaria: con nvarchar(120) un texto de 121 caracteres se truncaría en silencio y nunca saltaría el 50007. Corrige el plan (parámetro más ancho que el límite de 120, validado con LEN) para que plan y script coincidan."},
+  {"severidad": "baja", "archivo": "006_usp_empleado_consultar.sql", "detalle": "El BEGIN TRY/CATCH con ROLLBACK envuelve un SELECT sin transacción. Cumple CNV-5 pero es código muerto en un procedimiento de solo lectura. Si la regla lo permite, déjalo solo en los procedimientos que escriben. El cuerpo del TRY tampoco está indentado."},
+  {"severidad": "baja", "archivo": "006_usp_empleado_consultar.sql", "detalle": "LOWER(v.Nombre) LIKE '%...%' no puede usar índices, así que la búsqueda recorre toda la tabla. Es aceptable con el volumen actual y lo pide el plan (no depender del collation). Conviene revisarlo si el directorio crece."}
+ ],
+ "resumen": "Las reglas 50006 y 50007 tienen número y mensaje exactos. La vista y el procedimiento usan lista de columnas, JOIN explícito, comodines escapados y orden por Nombre y EmpleadoId. No hay hallazgos graves: solo la diferencia de tamaño de @Busqueda con el plan, que está justificada, y dos detalles de estilo."}
